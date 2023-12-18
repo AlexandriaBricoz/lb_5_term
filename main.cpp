@@ -202,6 +202,5 @@ int main() {
     } else {
         cout << "NO, NO, NOWAY" << cmd << endl;
     }
-
     return 0;
 }
