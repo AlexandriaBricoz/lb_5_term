@@ -6,6 +6,26 @@
 #include <fstream>
 
 using namespace std;
+int isFileEmpty(const char *filename) {
+    FILE *file = fopen(filename, "r");
+
+    if (file == NULL) {
+        perror("Error opening file");
+        return -1; // You might want to handle this error differently
+    }
+
+    // Attempt to read a character from the file
+    int ch = fgetc(file);
+
+    fclose(file);
+
+    // Check if the file is empty
+    if (ch == EOF) {
+        return 1; // File is empty
+    } else {
+        return 0; // File is not empty
+    }
+}
 
 class Graph {
 private:
@@ -42,8 +62,6 @@ public:
             // Записываем количество вершин и рёбер в начало файла
             file << 100 << " 0\n";
             file.close();
-        } else {
-            cout << "Failed to open file: " << filename << endl;
         }
     }
 
@@ -129,15 +147,14 @@ public:
         if (file.is_open()) {
             int edges;
             int n;
-            file >> n >> edges;
+                file >> n >> edges;
+                adjList.resize(vertices);
 
-            adjList.resize(vertices);
-
-            for (int i = 0; i < edges; ++i) {
-                int src, dest, weight;
-                file >> src >> dest >> weight;
-                addEdge(src, dest, weight);
-            }
+                for (int i = 0; i < edges; ++i) {
+                    int src, dest, weight;
+                    file >> src >> dest >> weight;
+                    addEdge(src, dest, weight);
+                }
 
             file.close();
         } else {
@@ -148,6 +165,7 @@ public:
     void writeGraphToCSV(const string &filename) {
         ofstream file(filename);
         if (file.is_open()) {
+
             // Записываем количество вершин и рёбер в начало файла
             file << vertices + 1 << " " << countEdges() << "\n";
             for (int i = 0; i < vertices; ++i) {
@@ -174,6 +192,9 @@ public:
 
 int main() {
     Graph graph(99);
+    if (isFileEmpty("/Users/aleksey/CLionProjects/untitled1/input.txt") == 1) {
+        graph.writeGraphToFile("/Users/aleksey/CLionProjects/untitled1/input.txt");
+    }
     graph.readGraphFromFile("/Users/aleksey/CLionProjects/untitled1/input.txt");
     //cout << "Введите команды в формате add (3, 4, 8), remove (3, 4), findShortestPath (1,3) или 'exit' для выхода." << endl;
 
