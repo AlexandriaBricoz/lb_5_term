@@ -36,9 +36,20 @@ public:
         }
         cout << endl;
     }
+    void writeGraphToFile(const string& filename) {
+        ofstream file(filename);
+        if (file.is_open()) {
+            // Записываем количество вершин и рёбер в начало файла
+            file << 100 << " 0\n";
+            file.close();
+        } else {
+            cout << "Failed to open file: " << filename << endl;
+        }
+    }
+
     void changeEdgeWeight(int src, int dest, int newWeight) {
         // Ищем ребро в списке смежности для исходной вершины
-        auto itSrc = find_if(adjList[src].begin(), adjList[src].end(), [&](const pair<int, int>& edge) {
+        auto itSrc = find_if(adjList[src].begin(), adjList[src].end(), [&](const pair<int, int> &edge) {
             return edge.first == dest;
         });
 
@@ -48,7 +59,7 @@ public:
         }
 
         // Ищем ребро в списке смежности для конечной вершины
-        auto itDest = find_if(adjList[dest].begin(), adjList[dest].end(), [&](const pair<int, int>& edge) {
+        auto itDest = find_if(adjList[dest].begin(), adjList[dest].end(), [&](const pair<int, int> &edge) {
             return edge.first == src;
         });
 
@@ -57,6 +68,7 @@ public:
             itDest->second = newWeight;
         }
     }
+
     // Рекурсивный метод для обхода в глубину (Depth-First Search)
     void dfs(int start, int end, vector<bool> &visited, vector<int> &path, vector<int> &minWeight) {
         visited[start] = true;
@@ -137,7 +149,7 @@ public:
         ofstream file(filename);
         if (file.is_open()) {
             // Записываем количество вершин и рёбер в начало файла
-            file << vertices+1 << " " << countEdges() << "\n";
+            file << vertices + 1 << " " << countEdges() << "\n";
             for (int i = 0; i < vertices; ++i) {
                 for (const auto &edge: adjList[i]) {
                     file << i << " " << edge.first << " " << edge.second << endl;
@@ -199,6 +211,8 @@ int main() {
         char dummy;
         ss >> dummy >> start >> dummy >> end;
         graph.findShortestPath(start, end);
+    } else if (cmd == "newGraph") {
+        graph.writeGraphToFile("/Users/aleksey/CLionProjects/untitled1/input.txt");
     } else {
         cout << "NO, NO, NOWAY" << cmd << endl;
     }
